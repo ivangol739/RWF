@@ -19,4 +19,23 @@ def parse_recipes():
 	return cook_book
 
 
-pprint.pprint(parse_recipes())
+def get_shop_list_by_dishes(cook_book, dishes, person_count):
+	menu = {}
+	for dish in dishes:
+		if dish in cook_book:
+			for ingredient in cook_book[dish]:
+				if ingredient["ingredient_name"] in menu:
+					menu[ingredient["ingredient_name"]]["quantity"] += int(ingredient["quantity"] * person_count)
+				else:
+					menu[ingredient["ingredient_name"]] = {
+						"measure": ingredient["measure"],
+						"quantity": int(ingredient["quantity"] * person_count)
+					}
+		else:
+			print("Такого блюда нет")
+	return menu
+
+
+cook_book = parse_recipes()
+pprint.pprint(get_shop_list_by_dishes(cook_book, ["Омлет", "Омлет"], 2))
+pprint.pprint(get_shop_list_by_dishes(cook_book, ["Омлет", "Утка по-пекински", "Запеченный картофель"], 1))
