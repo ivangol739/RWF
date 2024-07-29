@@ -1,38 +1,38 @@
 import os
 import pprint
 
+def read_file(file_path):
+	with open(file_path, "r", encoding="UTF-8") as f:
+		return f.readlines()
 
-def read_files():
+
+def read_files(file_paths):
 	text_in_files = {}
 
-	current_dir = os.getcwd()
-	file_path1 = os.path.join(current_dir, "data", "1.txt")
-	file_path2 = os.path.join(current_dir, "data", "2.txt")
-	file_path3 = os.path.join(current_dir, "data", "3.txt")
-
-	with open(file_path1, "r", encoding="UTF-8") as f1:
-		content1 = f1.readlines()
-		text_in_files[len(content1)] = ["1.txt", content1]
-
-	with open(file_path2, "r", encoding="UTF-8") as f2:
-		content2 = f2.readlines()
-		text_in_files[len(content2)] = ["2.txt", content2]
-
-	with open(file_path3, "r", encoding="UTF-8") as f3:
-		content3 = f3.readlines()
-		text_in_files[len(content3)] = ["3.txt", content3]
-
+	for file_path in file_paths:
+		try:
+			content = read_file(file_path)
+			text_in_files[len(content)] = [os.path.basename(file_path), content]
+		except Exception as e:
+			print(f"Ошибка при чтении файла {file_path}: {e}")
 	return text_in_files
 
 
-def sort_and_write(files):
-	with open("finalfiles.txt", "a", encoding="UTF-8") as finalfiles:
+def sort_and_write(files, output_path):
+	with open(output_path, "w", encoding="UTF-8") as finalfiles:
 		long_files = sorted(files.keys(), reverse=False)
 		for long in long_files:
 			finalfiles.write(f"{files[long][0]} \n")
 			finalfiles.write(f"{str(long)} \n")
-			finalfiles.write(F"{''.join(files[long][1])} \n")
-		return
+			finalfiles.write(f"{''.join(files[long][1])} \n")
 
-text_in_files = read_files()
-sort_and_write(text_in_files)
+
+if __name__ == "__main__":
+	file_paths = [
+		os.path.join(os.getcwd(), "data", "1.txt"),
+		os.path.join(os.getcwd(), "data", "2.txt"),
+		os.path.join(os.getcwd(), "data", "3.txt")
+	]
+
+	text_in_files = read_files(file_paths)
+	sort_and_write(text_in_files, "finalfiles.txt")
